@@ -2,7 +2,6 @@ import pytest
 from assertpy import assert_that
 from playwright.sync_api import sync_playwright
 import os
-import assertpy
 import json
 import requests
 import jupyter_client
@@ -25,7 +24,7 @@ def test_login(browser):
     page.fill("#user-name", "standard_user")
     page.fill("#password", "secret_sauce")
     page.click("#login-button")
-    assertpy.assert_that(page.url).contains("inventory.html")
+    assert_that(page.url).contains("inventory.html")
     page.close()
 
 
@@ -34,9 +33,9 @@ def test_login_invalid_password(browser):
     page = browser.new_page()
     page.goto("https://www.saucedemo.com/")
     page.fill("#user-name", "standard_user")
-    page.fill("#password", "<PASSWORD>")
-    assertpy.assert_that(page.content()).contains("Epic sadface: Password is required")
-    page.close()
+    page.fill("#password", "erfftee")
+    page.click("#login-button")
+    assert_that((page.locator("h3[data-test='error']")).inner_text()).is_equal_to("Epic sadface: Username and password do not match any user in this service")
 
 
 def test_login_empty_credentials(browser):
@@ -46,7 +45,7 @@ def test_login_empty_credentials(browser):
     page.fill("#user-name", "")
     page.fill("#password", "")
     page.click("#login-button")
-    assertpy.assert_that(page.content()).contains("Epic sadface: Username is required")
+    assert_that(page.content()).contains("Epic sadface: Username is required")
     page.close()
 
 
@@ -57,5 +56,8 @@ def test_login_invalid_username(browser):
     page.fill("#user-name", "invalid_user")
     page.fill("#password", "secret_sauce")
     page.click("#login-button")
-    assertpy.assert_that(page.content()).contains("Epic sadface: Password is required")
+    assert_that(page.content()).contains("Epic sadface: Username and password do not match any user in this service")
     page.close()
+
+    def h3_error(self):
+        return self.driver.find_element(By.XPATH, "//h3")
