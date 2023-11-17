@@ -58,6 +58,3 @@ def test_login_invalid_username(browser):
     page.click("#login-button")
     assert_that(page.content()).contains("Epic sadface: Username and password do not match any user in this service")
     page.close()
-
-    def h3_error(self):
-        return self.driver.find_element(By.XPATH, "//h3")
